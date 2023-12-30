@@ -41,15 +41,12 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
 
     'rest_framework',
-
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
 
-    'corsheaders.middleware.CorsMiddleware',
 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -59,9 +56,6 @@ MIDDLEWARE = [
 
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:19006",
-]
 
 ROOT_URLCONF = 'extend.urls'
 
