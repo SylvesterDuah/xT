@@ -1,13 +1,29 @@
+# ** Docummentation **
+# This form is created for the Extend model, Overdrive, and the Hormone
+# The Extend Form: 
+# It specifies that the form should include the 
+# fields name, source, and hot_prices from the Extend model
+
+# The subform:
+# TIt include only a subset of fields from the Extend model. 
+# InginForm has only the name field
+# HotPriceForm includes only the hot_prices field
+# SourceForm includes only the source field
+
+# Overdrive form:
+# It includes a list of fields specific to the Overdrive model.
+
+# Hormone form:
+# It includes a list of fields specific to the Hormone model.
+
+
+# Import modules/packages
 from django import forms
 from django.forms import formset_factory
 
 
-
-# Models
+# Importing the models
 from .models import Extend, Overdrive, Hormone
-
-
-
 
 
 
@@ -18,16 +34,22 @@ class ExtendForm(forms.ModelForm):
         model = Extend
         fields = ['name', 'source', 'hot_prices']
 
+
+# Form for 'name/ingine' field only
 class InginForm(forms.ModelForm):
     class Meta:
         model = Extend
         fields = ['name']
 
+
+# Form for 'hot_prices' field only
 class HotPriceForm(forms.ModelForm):
     class Meta:
         model = Extend
         fields = ['hot_prices']
 
+
+# Form for 'source' field only
 class SourceForm(forms.ModelForm):
     class Meta:
         model = Extend
@@ -105,7 +127,7 @@ class OverdriveForm(forms.ModelForm):
 
 
 
-
+# Hormone form page
 class HormoneForm(forms.ModelForm):
     class Meta:
         model = Hormone
