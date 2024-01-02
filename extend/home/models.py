@@ -1,8 +1,16 @@
+# Import modules/packages
 from django.db import models
 from django.utils import timezone
 
+
+
+
 # The main app
+# This is a model called 'Extend' that represents the home/landing page of the app.
+# It has three main attributes: 'name/ingin', 'source', and 'hot_prices'.
 class Extend(models.Model):
+    
+    # 'name' is a short text describing this thing, like a product name.
     name = models.CharField(max_length=100)
     SOLAR = "SOLAR"
     WIND = "WIND"
@@ -18,16 +26,26 @@ class Extend(models.Model):
         (BIOGAS, 'Bio-gas'),
         (BIOFUEL, 'Bio-fuel')
     ]
+
+     # 'source' is a dropdown choice field for the energy source (like solar or wind).
     source = models.CharField(max_length=50, choices=source_choices, default=SOLAR,)
+
+    # 'hot_prices' is a number field representing the cost of the current energy. 
+    # It has to be changing every second like crytocurrency prices
     hot_prices = models.DecimalField(max_digits=5, decimal_places=2)
     
+
+    # Refer to this object, to show its 'name'.
     def __str__(self):
         return self.name
     
+
+    # Query to sort based on their 'hot_prices'.
     class Meta:
         ordering = ['hot_prices']
 
 # Powerwall definition
+# This is another model called 'Overdrive', representing the powerwall page.
 class Overdrive(models.Model):
 
     # Users Dashboard
@@ -160,7 +178,7 @@ class Overdrive(models.Model):
         self.energy_efficiency_rating = efficiency_rating
         self.save()
 
-    # New fields for Producer Dashboard
+    # New fields for Producer Dashboard/features
     producer_dashboard_feature = models.BooleanField(default=False)
     individual_system_monitoring = models.BooleanField(default=False)
     performance_analysis = models.BooleanField(default=False)
@@ -209,10 +227,12 @@ class Overdrive(models.Model):
 
     # Overall Overdrive command
     def __str__(self):
+        # Refer to this object, to show its 'capacity' and 'charging_speed'.
         return f"Overdrive - {self.capacity}, {self.charging_speed}"
 
 
 # Ecommerce
+# 'Hormone' representing as an ecommerce system.
 class Hormone(models.Model):
     #  Users
     name = models.CharField(max_length=100, default="")
@@ -232,6 +252,8 @@ class Hormone(models.Model):
     orders = models.PositiveIntegerField(default=0)
     management_and_processes = models.TextField(blank=True)
 
+
+    # Refer to this product, to show its 'name'.
     def __str__(self):
         return self.name
 
