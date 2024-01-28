@@ -8,9 +8,9 @@ class Carousel:
     def fetch_news(self):
         # Define API endpoints for different news sources
         api_endpoints = {
-            'Bloomberg': 'https://example.com/bloomberg-api',
-            'WallStreet': 'https://example.com/wallstreet-api',
-            'WashingtonPost': 'https://example.com/washingtonpost-api',
+            'NASA': 'https://example.com/nasa-api',
+            'IBM': 'https://example.com/ibm-api',
+            'Call For Code': 'https://example.com/callforcode-api',
         }
 
         # Fetch news based on the user's location
@@ -65,4 +65,58 @@ class Carousel:
             deals_items.append({'product_name': product_name, 'discount_percentage': discount_percentage})
 
         return deals_items
+    
+
+    def fetch_trends(self):
+        # Define API endpoint for trends
+        trends_endpoint = 'https://example.com/trends-api'
+
+        try:
+            response = requests.get(trends_endpoint)
+            data = response.json()
+            # Extract and return relevant trends information
+            trends_items = self.extract_trends(data)
+            return trends_items
+        except requests.RequestException as e:
+            print(f"Error fetching trends: {e}")
+
+        return []
+
+    def extract_trends(self, data):
+        # Extract relevant information from the API response for trends
+        # Modify this based on the actual API response structure
+        trends_items = []
+        for item in data.get('trends', []):
+            trend_name = item.get('trend_name', '')
+            trend_description = item.get('trend_description', '')
+            trends_items.append({'trend_name': trend_name, 'trend_description': trend_description})
+
+        return trends_items
+    
+
+    def fetch_unforeseen_features(self):
+        # Define API endpoint for unforeseen features
+        unforeseen_features_endpoint = 'https://example.com/unforeseen-features-api'
+
+        try:
+            response = requests.get(unforeseen_features_endpoint)
+            data = response.json()
+            # Extract and return relevant unforeseen features information
+            unforeseen_features_items = self.extract_unforeseen_features(data)
+            return unforeseen_features_items
+        except requests.RequestException as e:
+            print(f"Error fetching unforeseen features: {e}")
+
+        return []
+
+    def extract_unforeseen_features(self, data):
+        # Extract relevant information from the API response for unforeseen features
+        # Modify this based on the actual API response structure
+        unforeseen_features_items = []
+        for item in data.get('unforeseen_features', []):
+            feature_name = item.get('feature_name', '')
+            feature_alert = item.get('feature_alert', '')
+            unforeseen_features_items.append({'feature_name': feature_name, 'feature_alert': feature_alert})
+
+        return unforeseen_features_items
         

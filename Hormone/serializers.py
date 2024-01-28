@@ -3,7 +3,7 @@
 
 # Import modules and classes
 from rest_framework.serializers import ModelSerializer
-from .models import Hormone, HormoneUser, HormoneProducer
+from .models import Hormone, HormoneUser, HormoneProducer, SellerRating
 
 # serializers.py
 from rest_framework import serializers
@@ -34,4 +34,11 @@ class HormoneProducerSerializer(ModelSerializer):
         # Include all fields from the model in the serializer
         fields = '__all__'
 
+
+
+
+class SellerRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SellerRating
+        fields = '__all__'
 

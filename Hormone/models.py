@@ -7,7 +7,7 @@ from home.Components.carousel import Carousel
 
 # Ecommerce
 # 'Hormone' representing as an ecommerce system.
-# Features for Powerwall Main Page (Without Login)
+# Features for Ecommerce Main Page (Without Login)
 class Hormone(models.Model):
     
     # Display general information about Powerwall
@@ -46,38 +46,43 @@ class Hormone(models.Model):
 
 
 
+from django.db import models
+from django.contrib.auth.models import User
 
 class HormoneUser(models.Model):
-    name = models.CharField(max_length=100, default="")
-    type_of_energy = models.CharField(max_length=100, default="")
-    rating = models.FloatField(default=0.0)
-    source = models.CharField(max_length=20, choices=[], blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # Add other HormoneUser-related fields if needed
 
+    def get_renewable_energy_types(self):
+        """
+        Get all renewable energy types associated with the user's sellers.
+        """
+        sellers = HormoneProducer.objects.filter(user=self.user)
+        ingins_types = RenewableEnergyType.objects.filter(HormoneProducer__in=sellers)
+        return ingins_types
 
-    # Field for deals of the week
-    deals_of_the_week = models.JSONField(blank=True, null=True)
-
-    source_choices = [
-        ('Solar', 'Solar'),
-        ('wind', 'Wind'),
-    ]
-
-    def __str__(self):
-        return self.name
-    
-
-    
-
-    @property
     def get_top_ingins(self):
-        # Retrieve top ingredients sorted by ratings
-        return self.top_ingins.order_by('-rating')
+        """
+        Get the top renewable energy types based on the highest-rated sellers.
+        Returns a list of dictionaries with seller information and ratings.
+        """
+        sellers = HormoneProducer.objects.filter(user=self.user)
+        top_ingins = []
 
-    def save(self, *args, **kwargs):
-        # Set choices dynamically from SellerRegistrationSerializer
-        # seller_serializer = SellerRegistrationSerializer()
-        # self.source = models.CharField(max_length=20, choices=seller_serializer.fields['energy_source'].choices, blank=True)
-        super().save(*args, **kwargs)
+        for seller in sellers:
+            ratings = SellerRating.objects.filter(seller=seller).order_by('-rating')
+            if ratings.exists():
+                top_ingin = {
+                    'company_name': seller.user.username,
+                    'ingins_type': seller.renewableenergytype.get_ingins_type,
+                    'rating': ratings.first().rating,
+                }
+                top_ingins.append(top_ingin)
+
+        top_ingins.sort(key=lambda x: x['rating'], reverse=True)
+        return top_ingins
+
+
 
 
     
@@ -86,20 +91,45 @@ class HormoneUser(models.Model):
 
 
 # Represents products in the ecommerce system
-class HormoneProducer(models.Model):
-    user_profile = models.OneToOneField(User, on_delete=models.CASCADE)
-    storefront = models.CharField(max_length=100, default="")
-    engine_type = models.CharField(max_length=100, default="")
-    storage = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    promotions = models.TextField(blank=True)
-    customer_orders = models.PositiveIntegerField(default=0)
-    management = models.TextField(blank=True)
-    integration = models.TextField(blank=True)
-    total_sales = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    total_tenure = models.PositiveIntegerField(default=0)
-    reports = models.TextField(blank=True)
-    contributions_to_ecosystem = models.TextField(blank=True)
-    analytics = models.TextField(blank=True)
 
-    def __str__(self):
-        return self.user_profile.username
+class HormoneProducer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # Other HormoneProducer-related fields
+
+class SellerRating(models.Model):
+    seller = models.ForeignKey(HormoneProducer, on_delete=models.CASCADE)
+    rating = models.FloatField()
+
+class Product(models.Model):
+    HormoneProducer = models.ForeignKey(HormoneProducer, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    # Other product-related fields
+
+class RenewableEnergyType(models.Model):
+    HormoneProducer = models.ForeignKey(HormoneProducer, on_delete=models.CASCADE)
+    get_ingins_type = models.CharField(max_length=255)
+    # Other renewable energy type-related fields
+
+class Order(models.Model):
+    HormoneProducer = models.ForeignKey(HormoneProducer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=255)
+    # Other order-related fields
+
+class Promotion(models.Model):
+    HormoneProducer = models.ForeignKey(HormoneProducer, on_delete=models.CASCADE)
+    details = models.TextField()
+    # Other promotion-related fields
+
+# Define other models for customer orders, management, integration, total sales, total tenure, reports, etc.
+
+class ContributionToEcosystem(models.Model):
+    HormoneProducer = models.ForeignKey(HormoneProducer, on_delete=models.CASCADE)
+    project_details = models.TextField()
+    # Other contribution-related fields
+
+class Analytics(models.Model):
+    HormoneProducer = models.ForeignKey(HormoneProducer, on_delete=models.CASCADE)
+    predictions = models.TextField()
+    # Other analytics-related fields
+
